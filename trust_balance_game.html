@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Balance: The Project Crisis</title>
+    <style>
+        /* =========================================
+           CSS STYLING & RESPONSIVE DESIGN
+           ========================================= */
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent: #f59e0b;
+            --deposit: #10b981;
+            --withdrawal: #ef4444;
+            --neutral: #64748b;
+            --text-light: #f8fafc;
+            --text-muted: #cbd5e1;
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Container Utama */
+        .game-container {
+            background-color: var(--panel-bg);
+            width: 100%;
+            max-width: 800px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            position: relative;
+            border: 2px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 { color: var(--accent); margin-bottom: 15px; text-align: center; }
+        p { line-height: 1.6; margin-bottom: 15px; color: var(--text-muted); }
+
+        .hidden { display: none !important; }
+
+        /* Form Inputs */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-light); }
+        .form-group input {
+            width: 100%; padding: 14px; border-radius: 8px; border: 2px solid #475569;
+            background-color: #0f172a; color: white; font-size: 16px; transition: border 0.3s;
+        }
+        .form-group input:focus { border-color: var(--primary); outline: none; }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--primary); color: white; border: none;
+            padding: 16px 24px; border-radius: 8px; font-size: 16px; font-weight: bold;
+            cursor: pointer; width: 100%; transition: all 0.3s ease; text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+        .btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+        .btn:disabled { background-color: var(--neutral); cursor: not-allowed; transform: none; }
+        
+        .btn-option {
+            background-color: #334155; text-align: left; padding: 15px; font-weight: normal;
+            border-left: 5px solid transparent; text-transform: none;
+        }
+        .btn-option:hover { background-color: #475569; border-left-color: var(--accent); }
+
+        /* Why Box & Hints */
+        .info-box {
+            background-color: rgba(59, 130, 246, 0.1); padding: 15px 20px;
+            border-left: 4px solid var(--primary); border-radius: 6px; margin-bottom: 20px;
+        }
+
+        /* Game Header (Timer, Score, Progress) */
+        .game-header {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px; gap: 10px;
+        }
+        .stat-box { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .timer-box { color: var(--withdrawal); animation: pulse 1s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        /* Progress Bar Gamifikasi */
+        .progress-wrapper { width: 100%; margin-top: 10px; }
+        .progress-text { font-size: 12px; margin-bottom: 5px; text-align: right; color: var(--accent); font-weight: bold; }
+        .progress-bg { width: 100%; height: 12px; background-color: #334155; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background-color: var(--primary); transition: width 0.5s ease-out; }
+
+        /* Trust Bars UI */
+        .trust-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin-bottom: 25px;
+        }
+        .trust-card { background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #334155;}
+        .trust-card span { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px;}
+        .trust-bar-bg { width: 100%; height: 20px; background-color: #0f172a; border-radius: 10px; overflow: hidden; border: 1px solid #475569;}
+        .trust-bar-fill { height: 100%; width: 50%; background-color: var(--accent); transition: all 0.5s ease-out; }
+
+        /* Story Area */
+        .story-area {
+            background-color: #0f172a; padding: 25px; border-radius: 10px; margin-bottom: 25px;
+            border-left: 5px solid var(--accent); position: relative;
+        }
+        .day-badge { 
+            position: absolute; top: -12px; left: 20px; background: var(--accent); color: var(--bg-dark); 
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; 
+        }
+        .hint-text { font-size: 13px; color: #94a3b8; font-style: italic; margin-top: 15px; border-top: 1px dashed #334155; padding-top: 10px; }
+
+        /* Badges */
+        .badge-popup {
+            position: fixed; top: 20px; right: 20px; background: rgba(245, 158, 11, 0.9);
+            color: #000; padding: 15px 25px; border-radius: 10px; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .badge-popup.show { transform: translateX(0); }
+        .badge-icon { font-size: 30px; }
+
+        /* Debrief Section */
+        .debrief-card {
+            background-color: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 15px;
+            border-left: 5px solid var(--neutral);
+        }
+        .debrief-card.deposit { border-left-color: var(--deposit); }
+        .debrief-card.withdrawal { border-left-color: var(--withdrawal); }
+        .debrief-header { font-weight: bold; margin-bottom: 5px; color: white; }
+        .debrief-feedback { font-size: 14px; margin-top: 8px; color: #94a3b8; }
+
+        footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 20px; }
+        .audio-toggle { cursor: pointer; background: #334155; border: none; color: white; padding: 8px 12px; border-radius: 6px; font-size: 18px; }
+
+        @media (max-width: 600px) {
+            .game-container { padding: 20px; }
+            .game-header { flex-direction: column; align-items: flex-start; }
+            .trust-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="app">
+        <!-- =========================================
+             SCREEN 1: THE GATEWAY
+             ========================================= -->
+        <div id="screen-gateway">
+            <h1>TRUST BALANCE</h1>
+            <h3>The Project Crisis Simulation</h3>
+            
+            <div class="info-box">
+                <strong>💡 WHY PLAY THIS?</strong><br>
+                Di dunia nyata, keahlian teknis saja tidak cukup. Hubungan kerja menentukan kecepatan penyelesaian masalah. Game ini melatih insting Anda dalam membedakan "Setoran" (Deposit) dan "Tarikan" (Withdrawal) pada <i>Emotional Bank Account</i> rekan kerja Anda.
+            </div>
+
+            <div class="form-group">
+                <label for="input-name">Nama Peserta</label>
+                <input type="text" id="input-name" placeholder="Masukkan Nama Lengkap Anda" required>
+            </div>
+            <div class="form-group">
+                <label for="input-nik">NIK (10 Digit Angka)</label>
+                <input type="text" id="input-nik" placeholder="Contoh: 1234567890" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <small id="nik-error" style="color:var(--withdrawal); display:none; margin-top:5px;">NIK harus tepat 10 digit angka.</small>
+            </div>
+            
+            <button class="btn" onclick="validateAndProceed()">Lanjut ke Briefing ➔</button>
+        </div>
+
+        <!-- =========================================
+             SCREEN 2: MISSION BRIEFING
+             ========================================= -->
+        <div id="screen-briefing" class="hidden">
+            <h2>MISSION BRIEFING</h2>
+            <p>Selamat bergabung, <b id="display-name" style="color:var(--accent);"></b>.</p>
+            <p>Anda adalah <b>Alex</b>, Project Manager baru. Proyek "Alpha" sedang kritis dan Anda harus mengelolanya bersama 3 stakeholder utama dalam waktu 5 hari (Senin-Jumat):</p>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <p>👨‍💻 <b>Budi (Junior Dev):</b> Butuh bimbingan, sering <i>insecure</i>.</p>
+                <p>👩‍💼 <b>Siska (Marketing):</b> Ambisius, sibuk, permintaannya sering mendadak.</p>
+                <p>👔 <b>Pak Dirman (Atasan):</b> Fokus pada hasil & sangat menghargai transparansi.</p>
+            </div>
+
+            <div class="info-box" style="border-color: var(--deposit); background: rgba(16, 185, 129, 0.1);">
+                <strong>🎯 RULES OF THE GAME:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-muted);">
+                    <li>Terdapat 10 insiden (<b>Time Challenge: 20 Detik/Soal</b>).</li>
+                    <li>Pilih tindakan yang bersifat <b>Setoran</b> (menambah trust) dan hindari <b>Tarikan</b> (mengurangi trust).</li>
+                    <li>Audio akan otomatis menyala saat permainan dimulai.</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="startGame()">SAYA SIAP! MULAI SIMULASI 🚀</button>
+        </div>
+
+        <!-- =========================================
+             SCREEN 3: CORE EXECUTION (GAMEPLAY)
+             ========================================= -->
+        <div id="screen-game" class="hidden">
+            <div class="game-header">
+                <div class="stat-box">⭐ Poin: <span id="ui-score">0</span></div>
+                <div class="stat-box timer-box">⏱️ <span id="ui-timer">20</span>s</div>
+                <button class="audio-toggle" onclick="toggleAudio()" id="btn-audio">🔊</button>
+                
+                <div class="progress-wrapper">
+                    <div class="progress-text">Progress: <span id="ui-progress-text">0%</span></div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" id="ui-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emotional Bank Account Bars -->
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <span>👨‍💻 Budi (Tim)</span>
+                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-budi"></div></div>
+                </div>
+                <div class="trust-card">
+                    <span>👩‍💼 Siska (Lintas Divisi)</span>
+                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-siska"></div></div>
+                </div>
+                <div class="trust-card">
+                    <span>👔 P. Dirman (Atasan)</span>
+                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-dirman"></div></div>
+                </div>
+            </div>
+
+            <!-- Story Scenario -->
+            <div class="story-area">
+                <div class="day-badge" id="ui-day">Senin</div>
+                <h3 id="ui-q-title" style="color:white; text-align:left; margin-bottom:10px; margin-top:5px;">Situasi</h3>
+                <p id="ui-q-desc" style="color:white; font-size:16px;">Deskripsi masalah...</p>
+                <div class="hint-text">💡 Hint: <span id="ui-q-hint"></span></div>
+            </div>
+
+            <!-- Answer Options -->
+            <div id="options-container">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+
+        <!-- =========================================
+             SCREEN 4: POST-ACTION DEBRIEF
+             ========================================= -->
+        <div id="screen-debrief" class="hidden">
+            <h1 id="result-heading">SIMULASI SELESAI</h1>
+            
+            <div class="info-box" id="result-status-box" style="text-align: center;">
+                <h2 id="result-subheading" style="margin-bottom: 10px;">Status Proyek</h2>
+                <p id="result-message" style="color: white; font-size: 16px;"></p>
+            </div>
+
+            <div style="display: flex; justify-content: space-around; background: #1e293b; padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #334155;">
+                <div style="text-align: center;">
+                    <div style="font-size: 14px; color: var(--text-muted);">Total Poin</div>
+                    <div style="font-size: 28px; font-weight: bold; color: var(--accent);" id="final-score">0</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 14px; color: var(--text-muted);">Rata-rata Kepercayaan</div>
+                    <div style="font-size: 28px; font-weight: bold; color: var(--primary);" id="final-trust">0%</div>
+                </div>
+            </div>
+
+            <h3>Laporan Refleksi Interaksi</h3>
+            <p style="font-size: 14px;">Evaluasi keputusan Anda berdasarkan teori <i>Emotional Bank Account</i> (Covey):</p>
+            
+            <div id="debrief-list">
+                <!-- Evaluasi diinjeksi via JS -->
+            </div>
+            
+            <button class="btn" onclick="location.reload()" style="margin-top: 20px;">Main Ulang / Retake</button>
+        </div>
+
+        <footer>Education & Training Dept. © 2026</footer>
+    </div>
+
+    <!-- Badge Notification Element -->
+    <div class="badge-popup" id="badge-notification">
+        <div class="badge-icon" id="badge-icon">🏅</div>
+        <div>
+            <div style="font-size: 12px; opacity: 0.8;">BADGE UNLOCKED</div>
+            <div id="badge-title" style="font-size: 16px;">Nama Badge</div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         JAVASCRIPT LOGIC & WEB AUDIO API
+         ========================================= -->
+    <script>
+        /* --- GAME DATA --- */
+        const scenarios = [
+            {
+                day: "Senin", target: "budi", 
+                title: "Junior Terjebak Masalah",
+                desc: "Budi menghabiskan waktu berjam-jam mencoba memperbaiki bug kecil dan terlihat sangat frustrasi, progress tugasnya terhenti.",
+                hint: "Budi butuh bimbingan tanpa merasa dihakimi.",
+                options: [
+                    { text: "Tawarkan bantuan 15 menit untuk melihat kodenya bersama-sama.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Anda meluangkan waktu untuk mendengarkan dan membimbing, memberikan rasa aman pada Budi." },
+                    { text: "Tegur Budi agar belajar lebih cepat karena deadline sudah dekat.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Menunjukkan reaksi tidak sabar yang semakin merusak kepercayaan diri junior." },
+                    { text: "Kirimkan link dokumentasi tanpa penjelasan lebih lanjut.", type: "neutral", val: 0, score: 0, explain: "NETRAL (Missed Opportunity): Menyelesaikan masalah secara teknis tapi kehilangan momen membangun hubungan manusiawi." }
+                ]
+            },
+            {
+                day: "Senin", target: "dirman", 
+                title: "Pertanyaan Progres Dadakan",
+                desc: "Pak Dirman memanggil Anda dan meminta update progres di luar jadwal meeting, beliau terlihat cemas.",
+                hint: "Atasan menghargai proaktivitas dan transparansi.",
+                options: [
+                    { text: "Jelaskan dengan jujur progres saat ini beserta potensi masalah teknis yang ada.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Mengklarifikasi ekspektasi dan menunjukkan integritas (kejujuran) sejak awal." },
+                    { text: "Katakan 'Semua aman Pak' untuk menenangkannya, meski sebenarnya ada hambatan.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Kebohongan kecil ini akan merusak kepercayaan besar (Trust) di masa depan saat masalah meledak." },
+                    { text: "Minta beliau mengecek sendiri di aplikasi Task Management.", type: "neutral", val: -10, score: -5, explain: "TARIKAN RINGAN: Kaku dan terkesan tidak menghargai kebutuhan emosional atasan." }
+                ]
+            },
+            {
+                day: "Selasa", target: "siska", 
+                title: "Revisi Tiba-tiba",
+                desc: "Siska dari Marketing meminta fitur tambahan secara mendadak yang akan menggeser jadwal rilis hari ini.",
+                hint: "Siska berorientasi target, hindari konflik terbuka tapi tetap jaga batasan.",
+                options: [
+                    { text: "Tolak mentah-mentah dan marahi dia karena tidak paham proses development.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Reaktif dan merusak relasi kerja lintas divisi." },
+                    { text: "Ajak diskusi singkat untuk memahami tujuan fitur tersebut dan mencari jalan tengah (win-win).", type: "deposit", val: 20, score: 10, explain: "SETORAN: Berusaha memahami terlebih dahulu (Seek First to Understand), menunjukkan respek." },
+                    { text: "Abaikan pesannya sampai Anda selesai dengan pekerjaan Anda.", type: "neutral", val: -10, score: -5, explain: "TARIKAN RINGAN: Mengabaikan komunikasi sama dengan penarikan saldo secara pasif." }
+                ]
+            },
+            {
+                day: "Selasa", target: "budi", 
+                title: "Kesalahan Fatal di Server",
+                desc: "Budi tidak sengaja menghapus database testing, membuat seluruh tim tidak bisa bekerja selama 1 jam.",
+                hint: "Ujian sesungguhnya dari Emotional Bank Account adalah saat terjadi kesalahan.",
+                options: [
+                    { text: "Perbaiki diam-diam tanpa memberitahunya agar dia tidak merasa bersalah.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Menghindari masalah. Budi tidak belajar dari kesalahannya." },
+                    { text: "Panggil secara privat, bahas kronologinya tanpa menyalahkan, dan buat pencegahan bersama.", type: "deposit", val: 20, score: 10, explain: "SETORAN BESAR: Memberikan feedback konstruktif dan memaafkan kesalahan menciptakan loyalitas yang kuat." },
+                    { text: "Tegur keras di grup chat utama agar yang lain tidak mengulangi.", type: "withdrawal", val: -25, score: -15, explain: "TARIKAN FATAL: Mempermalukan orang di depan umum adalah cara tercepat menghancurkan Trust." }
+                ]
+            },
+            {
+                day: "Rabu", target: "siska", 
+                title: "Keluhan ke Atasan",
+                desc: "Siska mengirim email komplain panjang kepada Pak Dirman dan CC ke Anda, mengeluhkan tim dev yang lambat.",
+                hint: "Hadapi masalah dengan objektif, jangan balas menyerang.",
+                options: [
+                    { text: "Balas email dengan data objektif mengenai backlog dan ajak Siska meeting penyelarasan.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Mengendalikan emosi dan merespons (Response-ability) dengan solusi profesional." },
+                    { text: "Balas email dengan menyerang balik bahwa spesifikasi dari tim marketing selalu tidak jelas.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Lingkaran reaktif yang hanya akan memperburuk konflik antar tim." },
+                    { text: "Hanya membalas 'Noted' dan membiarkan atasan yang menilai.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Tidak memperburuk, tapi tidak memperbaiki relasi yang sedang rusak." }
+                ]
+            },
+            {
+                day: "Rabu", target: "dirman", 
+                title: "Gosip Kantor",
+                desc: "Pak Dirman memanggil Anda dan memancing Anda untuk menjelek-jelekkan kinerja Siska dari Marketing.",
+                hint: "Integritas berarti setia kepada mereka yang tidak hadir.",
+                options: [
+                    { text: "Ikut mengeluhkan Siska agar atasan merasa Anda berada di pihaknya.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Jika Anda menjelekkan orang yang tidak ada, Pak Dirman diam-diam tidak akan mempercayai Anda juga." },
+                    { text: "Bersikap netral dengan mengatakan Anda hanya fokus pada tim development.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Cukup aman, tapi kurang menunjukkan kepemimpinan." },
+                    { text: "Bela Siska dengan sopan, sampaikan bahwa Siska hanya berusaha memenuhi target Marketing.", type: "deposit", val: 25, score: 15, explain: "SETORAN BESAR: Menunjukkan integritas tinggi. Atasan akan tahu bahwa Anda dapat dipercaya." }
+                ]
+            },
+            {
+                day: "Kamis", target: "budi", 
+                title: "Urusan Keluarga Darurat",
+                desc: "Budi memohon izin pulang cepat di tengah situasi genting karena anaknya sakit parah.",
+                hint: "Hal kecil (kemanusiaan) adalah hal besar dalam hubungan.",
+                options: [
+                    { text: "Tolak izinnya karena besok adalah hari rilis (launching) proyek.", type: "withdrawal", val: -30, score: -15, explain: "TARIKAN FATAL: Mengorbankan kemanusiaan demi tugas menghancurkan Trust sepenuhnya." },
+                    { text: "Izinkan pulang seketika dan yakinkan bahwa tim akan mem-backup tugasnya.", type: "deposit", val: 25, score: 15, explain: "SETORAN: Memperhatikan hal-hal kecil (Personal) menciptakan rasa aman yang tak tergantikan." },
+                    { text: "Beri izin tapi dengan raut wajah kesal dan menuntutnya remote bekerja.", type: "neutral", val: -10, score: -5, explain: "TARIKAN RINGAN: Gestur negatif membatalkan efek positif dari pemberian izin." }
+                ]
+            },
+            {
+                day: "Kamis", target: "dirman", 
+                title: "Janji Mustahil",
+                desc: "Pak Dirman secara sepihak menjanjikan ke direksi bahwa sistem akan beroperasi 10x lebih cepat besok.",
+                hint: "Klarifikasi ekspektasi harus dilakukan dengan berani dan berdasar.",
+                options: [
+                    { text: "Diam saja dan berharap mukjizat terjadi besok.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Tidak mengklarifikasi harapan di awal adalah jaminan kekecewaan di akhir." },
+                    { text: "Beritahu secara asertif bahwa janji itu tidak realistis dan berikan alternatif optimasi maksimal yang bisa dicapai.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Mengklarifikasi harapan (Clarifying Expectations) mencegah miskomunikasi fatal." },
+                    { text: "Marah dan mengancam resign karena merasa ditekan.", type: "withdrawal", val: -30, score: -15, explain: "TARIKAN: Reaksi emosional merusak citra profesionalitas Anda." }
+                ]
+            },
+            {
+                day: "Jumat", target: "siska", 
+                title: "Permintaan Maaf Siska",
+                desc: "Siska menyadari kesalahannya dalam membuat spesifikasi dan meminta maaf secara pribadi kepada Anda.",
+                hint: "Cara Anda menerima permintaan maaf menentukan relasi ke depan.",
+                options: [
+                    { text: "Sindir Siska agar dia benar-benar kapok.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Menyimpan dendam dan arogansi merusak setoran sebelumnya." },
+                    { text: "Abaikan dan suruh dia langsung perbaiki dokumennya.", type: "neutral", val: -5, score: 0, explain: "NETRAL/TARIKAN: Kehilangan peluang untuk menguatkan kolaborasi." },
+                    { text: "Terima permintaan maaf dengan tulus dan ajak buka lembaran baru.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Meminta dan menerima maaf dengan tulus (Apologizing Sincerely) membersihkan 'Rekening'." }
+                ]
+            },
+            {
+                day: "Jumat (KRISIS)", target: "all", 
+                title: "SISTEM DOWN SAAT LAUNCHING!",
+                desc: "KRISIS TERJADI! Sistem crash 1 jam sebelum launching. Suasana sangat tegang, semua mata tertuju pada Anda.",
+                hint: "Kepemimpinan diuji saat krisis. Trust yang tinggi akan menyelamatkan tim.",
+                options: [
+                    { text: "Panik, salahkan Budi di depan atasan, dan lepas tangan.", type: "withdrawal", val: -40, score: -20, explain: "TARIKAN FATAL: Pemimpin yang cuci tangan menghancurkan semua Saldo Emosi." },
+                    { text: "Tetap tenang, delegasikan tugas perbaikan ke Budi, minta Siska handle komunikasi klien, dan lapor Dirman transparan.", type: "deposit", val: 30, score: 20, explain: "SETORAN MASTER: Menggunakan Saldo Kepercayaan yang telah dibangun. Tim bergerak solid tanpa rasa takut." },
+                    { text: "Coba perbaiki semua sendiri tanpa komunikasi ke siapapun.", type: "neutral", val: -20, score: -10, explain: "TARIKAN: Micromanagement di saat krisis menunjukkan ketiadaan rasa saling percaya (Trust)." }
+                ]
+            }
+        ];
+
+        /* --- STATE VARIABLES --- */
+        let currentQ = 0;
+        let score = 0;
+        let trust = { budi: 50, siska: 50, dirman: 50 };
+        let historyDebrief = [];
+        let timer = 20;
+        let timerInterval;
+
+        /* --- WEB AUDIO API SYSTEM --- */
+        let audioCtx;
+        let masterGain;
+        let compressor;
+        let isAudioEnabled = false;
+        let bgmOscillator;
+        let bgmInterval;
+
+        function initAudio() {
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                return;
+            }
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+            
+            // Paksa resume context untuk browser yang memblokir autoplay (Chrome/Safari)
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            // Compressor to prevent clipping/distortion when setting high gain
+            compressor = audioCtx.createDynamicsCompressor();
+            compressor.threshold.setValueAtTime(-24, audioCtx.currentTime);
+            compressor.knee.setValueAtTime(30, audioCtx.currentTime);
+            compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+            compressor.attack.setValueAtTime(0.003, audioCtx.currentTime);
+            compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+            
+            masterGain = audioCtx.createGain();
+            // Permintaan volume 2.5: Kita set gain ke 2.5, tapi diamankan oleh compressor
+            masterGain.gain.value = 2.5; 
+            
+            masterGain.connect(compressor);
+            compressor.connect(audioCtx.destination);
+            
+            isAudioEnabled = true;
+            document.getElementById('btn-audio').innerText = '🔊';
+            startBGM();
+        }
+
+        function toggleAudio() {
+            if (!audioCtx) return;
+            isAudioEnabled = !isAudioEnabled;
+            masterGain.gain.value = isAudioEnabled ? 2.5 : 0;
+            document.getElementById('btn-audio').innerText = isAudioEnabled ? '🔊' : '🔇';
+            
+            // Pastikan audio berjalan saat unmute
+            if (isAudioEnabled && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // SFX Generator
+        function playSFX(type) {
+            if (!isAudioEnabled || !audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(masterGain);
+            
+            let now = audioCtx.currentTime;
+            
+            if (type === 'deposit') { // Suara Koin (Ting!)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, now); // B5
+                osc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.1); // E6
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } 
+            else if (type === 'withdrawal') { // Suara Buzzer (Tet!)
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            }
+            else if (type === 'badge') { // Suara Fanfare
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.setValueAtTime(554.37, now + 0.15); // C#5
+                osc.frequency.setValueAtTime(659.25, now + 0.3); // E5
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.6);
+                osc.start(now); osc.stop(now + 0.6);
+            }
+            else { // Neutral (Blip)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
+            }
+        }
+
+        function startBGM() {
+            // Bersihkan interval yang mungkin menumpuk
+            if (bgmInterval) clearInterval(bgmInterval);
+            
+            // Looping retro arpeggio
+            const notes = [220.00, 277.18, 329.63, 440.00]; // A major
+            let noteIdx = 0;
+            
+            bgmInterval = setInterval(() => {
+                if (!isAudioEnabled || !audioCtx) return;
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                // Gunakan triangle wave agar terdengar seperti musik konsol retro
+                osc.type = 'triangle'; 
+                osc.frequency.value = notes[noteIdx]; 
+                
+                osc.connect(gain);
+                gain.connect(masterGain);
+                
+                // [PENTING] Jadwalkan audio sedikit di masa depan (0.05 detik) 
+                // agar terhindar dari bug 'silent error' di Web Audio API
+                let now = audioCtx.currentTime + 0.05;
+                
+                // Atur volume sedikit lebih tinggi dari sebelumnya dan sustain suara diperpanjang
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+                
+                osc.start(now); 
+                osc.stop(now + 0.5);
+                
+                noteIdx = (noteIdx + 1) % notes.length;
+            }, 500); // Tempo slightly faster untuk efek krisis
+        }
+
+        /* --- GAME FLOW FUNCTIONS --- */
+        function validateAndProceed() {
+            const name = document.getElementById("input-name").value.trim();
+            const nik = document.getElementById("input-nik").value.trim();
+            const err = document.getElementById("nik-error");
+            
+            if (!name || nik.length !== 10) {
+                err.style.display = "block";
+                return;
+            }
+            err.style.display = "none";
+            document.getElementById("display-name").innerText = name;
+            
+            document.getElementById("screen-gateway").classList.add("hidden");
+            document.getElementById("screen-briefing").classList.remove("hidden");
+        }
+
+        function startGame() {
+            initAudio(); // Aktivasi Audio setelah interaksi user
+            
+            document.getElementById("screen-briefing").classList.add("hidden");
+            document.getElementById("screen-game").classList.remove("hidden");
+            
+            updateTrustUI();
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            if (currentQ >= scenarios.length) {
+                finishGame();
+                return;
+            }
+
+            // Check Badges (Halfway)
+            if (currentQ === 5 && score >= 40) {
+                showBadge("Good Listener", "Mempertahankan kepercayaan di paruh pertama!");
+            }
+
+            const q = scenarios[currentQ];
+            
+            document.getElementById("ui-day").innerText = q.day;
+            document.getElementById("ui-q-title").innerText = q.title;
+            document.getElementById("ui-q-desc").innerText = q.desc;
+            document.getElementById("ui-q-hint").innerText = q.hint;
+
+            // Render Options (Acak urutan)
+            const optContainer = document.getElementById("options-container");
+            optContainer.innerHTML = "";
+            let shuffled = [...q.options].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "btn btn-option";
+                btn.innerText = String.fromCharCode(65 + index) + ". " + opt.text;
+                btn.onclick = () => handleAnswer(opt, q);
+                optContainer.appendChild(btn);
+            });
+
+            // Update Progress Bar
+            const percentage = Math.round(((currentQ) / scenarios.length) * 100);
+            document.getElementById("ui-progress-text").innerText = percentage + "%";
+            document.getElementById("ui-progress-bar").style.width = percentage + "%";
+
+            // Start Time Challenge
+            clearInterval(timerInterval);
+            timer = 20;
+            document.getElementById("ui-timer").innerText = timer;
+            
+            timerInterval = setInterval(() => {
+                timer--;
+                document.getElementById("ui-timer").innerText = timer;
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    // TimeOut Penalty = Tarikan Otomatis
+                    playSFX('withdrawal');
+                    handleAnswer({ 
+                        text: "[WAKTU HABIS] Tidak memberikan respons.", 
+                        type: "withdrawal", val: -15, score: -10, 
+                        explain: "TARIKAN: Mengabaikan masalah adalah bentuk penarikan saldo secara pasif." 
+                    }, q);
+                }
+            }, 1000);
+        }
+
+        function handleAnswer(selectedOpt, questionData) {
+            clearInterval(timerInterval);
+
+            // 1. Update Scores & Play SFX
+            score += selectedOpt.score;
+            document.getElementById("ui-score").innerText = score;
+            playSFX(selectedOpt.type);
+
+            // 2. Update Emotional Bank Account
+            let targetUpdate = questionData.target;
+            if (targetUpdate === "all") {
+                trust.budi = clamp(trust.budi + selectedOpt.val);
+                trust.siska = clamp(trust.siska + selectedOpt.val);
+                trust.dirman = clamp(trust.dirman + selectedOpt.val);
+            } else {
+                trust[targetUpdate] = clamp(trust[targetUpdate] + selectedOpt.val);
+            }
+            updateTrustUI();
+
+            // 3. Record Debrief
+            historyDebrief.push({
+                incident: questionData.title,
+                choice: selectedOpt.text,
+                type: selectedOpt.type,
+                feedback: selectedOpt.explain
+            });
+
+            // 4. Next Question Delay
+            // Nonaktifkan tombol sementara
+            const btns = document.querySelectorAll(".btn-option");
+            btns.forEach(b => b.disabled = true);
+
+            setTimeout(() => {
+                currentQ++;
+                renderQuestion();
+            }, 800);
+        }
+
+        function clamp(val) {
+            return Math.max(0, Math.min(100, val));
+        }
+
+        function updateTrustUI() {
+            const getColor = (v) => v >= 70 ? 'var(--deposit)' : (v <= 30 ? 'var(--withdrawal)' : 'var(--accent)');
+            
+            const bars = [
+                { id: "bar-budi", val: trust.budi },
+                { id: "bar-siska", val: trust.siska },
+                { id: "bar-dirman", val: trust.dirman }
+            ];
+
+            bars.forEach(b => {
+                let el = document.getElementById(b.id);
+                el.style.width = b.val + "%";
+                el.style.backgroundColor = getColor(b.val);
+            });
+        }
+
+        function showBadge(title, desc) {
+            playSFX('badge');
+            const el = document.getElementById("badge-notification");
+            document.getElementById("badge-title").innerText = title;
+            el.classList.add("show");
+            setTimeout(() => el.classList.remove("show"), 3500);
+        }
+
+        function finishGame() {
+            clearInterval(bgmInterval);
+            document.getElementById("screen-game").classList.add("hidden");
+            document.getElementById("screen-debrief").classList.remove("hidden");
+
+            const avgTrust = Math.round((trust.budi + trust.siska + trust.dirman) / 3);
+            
+            // Update UI Score
+            document.getElementById("final-score").innerText = score;
+            document.getElementById("final-trust").innerText = avgTrust + "%";
+
+            const uiStatusBox = document.getElementById("result-status-box");
+            const uiSubheading = document.getElementById("result-subheading");
+            const uiMessage = document.getElementById("result-message");
+
+            // Evaluate Win/Lose
+            if (avgTrust >= 60) { // WIN
+                playSFX('badge');
+                uiStatusBox.style.backgroundColor = "rgba(16, 185, 129, 0.1)"; // deposit color
+                uiStatusBox.style.borderLeft = "4px solid var(--deposit)";
+                uiSubheading.innerText = "🌟 PROYEK SUKSES! 🌟";
+                uiSubheading.style.color = "var(--deposit)";
+                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi. Budi bekerja keras memperbaikinya tanpa mengeluh, Siska menenangkan klien, dan Pak Dirman memuji kepemimpinan Anda. Komunikasi terbuka menang!`;
+                
+                if(score > 120) setTimeout(() => showBadge("Master of Trust", "Poin Sempurna! Relasi kerja sangat solid."), 1000);
+            } else { // LOSE
+                playSFX('withdrawal');
+                uiStatusBox.style.backgroundColor = "rgba(239, 68, 68, 0.1)"; // withdrawal color
+                uiStatusBox.style.borderLeft = "4px solid var(--withdrawal)";
+                uiSubheading.innerText = "💥 PROYEK GAGAL 💥";
+                uiSubheading.style.color = "var(--withdrawal)";
+                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah. Budi menolak disalahkan dan mengancam <i>resign</i>, Siska menyalahkan IT ke klien, dan Anda mendapat Surat Peringatan. Inilah efek dari Tarikan Emosi!`;
+            }
+
+            // Generate Debrief Feedback Loop
+            const debriefContainer = document.getElementById("debrief-list");
+            historyDebrief.forEach((item, index) => {
+                let card = document.createElement("div");
+                card.className = `debrief-card ${item.type}`;
+                card.innerHTML = `
+                    <div class="debrief-header">Insiden ${index + 1}: ${item.incident}</div>
+                    <div style="font-size:13px; font-style:italic;">Respons Anda: "${item.choice}"</div>
+                    <div class="debrief-feedback"><b>Analisis:</b> ${item.feedback}</div>
+                `;
+                debriefContainer.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
