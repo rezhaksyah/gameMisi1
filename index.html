@@ -288,6 +288,7 @@
                 <!-- Evaluasi diinjeksi via JS -->
             </div>
             
+            <!-- Tombol ini nanti akan diupdate statusnya oleh GAS Payload -->
             <button class="btn" onclick="location.reload()" style="margin-top: 20px;">Main Ulang / Retake</button>
         </div>
 
@@ -445,7 +446,7 @@
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioCtx = new AudioContext();
             
-            // Paksa resume context untuk browser yang memblokir autoplay (Chrome/Safari)
+            // Paksa resume context untuk browser yang memblokir autoplay
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
@@ -476,7 +477,6 @@
             masterGain.gain.value = isAudioEnabled ? 2.5 : 0;
             document.getElementById('btn-audio').innerText = isAudioEnabled ? '🔊' : '🔇';
             
-            // Pastikan audio berjalan saat unmute
             if (isAudioEnabled && audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
@@ -527,10 +527,8 @@
         }
 
         function startBGM() {
-            // Bersihkan interval yang mungkin menumpuk
             if (bgmInterval) clearInterval(bgmInterval);
             
-            // Looping retro arpeggio
             const notes = [220.00, 277.18, 329.63, 440.00]; // A major
             let noteIdx = 0;
             
@@ -540,18 +538,15 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 
-                // Gunakan triangle wave agar terdengar seperti musik konsol retro
                 osc.type = 'triangle'; 
                 osc.frequency.value = notes[noteIdx]; 
                 
                 osc.connect(gain);
                 gain.connect(masterGain);
                 
-                // [PENTING] Jadwalkan audio sedikit di masa depan (0.05 detik) 
-                // agar terhindar dari bug 'silent error' di Web Audio API
+                // Jadwalkan audio sedikit di masa depan (0.05 detik) untuk anti silent-bug
                 let now = audioCtx.currentTime + 0.05;
                 
-                // Atur volume sedikit lebih tinggi dari sebelumnya dan sustain suara diperpanjang
                 gain.gain.setValueAtTime(0.15, now);
                 gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
                 
@@ -559,7 +554,7 @@
                 osc.stop(now + 0.5);
                 
                 noteIdx = (noteIdx + 1) % notes.length;
-            }, 500); // Tempo slightly faster untuk efek krisis
+            }, 500);
         }
 
         /* --- GAME FLOW FUNCTIONS --- */
@@ -595,7 +590,6 @@
                 return;
             }
 
-            // Check Badges (Halfway)
             if (currentQ === 5 && score >= 40) {
                 showBadge("Good Listener", "Mempertahankan kepercayaan di paruh pertama!");
             }
@@ -607,7 +601,6 @@
             document.getElementById("ui-q-desc").innerText = q.desc;
             document.getElementById("ui-q-hint").innerText = q.hint;
 
-            // Render Options (Acak urutan)
             const optContainer = document.getElementById("options-container");
             optContainer.innerHTML = "";
             let shuffled = [...q.options].sort(() => Math.random() - 0.5);
@@ -620,12 +613,10 @@
                 optContainer.appendChild(btn);
             });
 
-            // Update Progress Bar
             const percentage = Math.round(((currentQ) / scenarios.length) * 100);
             document.getElementById("ui-progress-text").innerText = percentage + "%";
             document.getElementById("ui-progress-bar").style.width = percentage + "%";
 
-            // Start Time Challenge
             clearInterval(timerInterval);
             timer = 20;
             document.getElementById("ui-timer").innerText = timer;
@@ -635,7 +626,6 @@
                 document.getElementById("ui-timer").innerText = timer;
                 if (timer <= 0) {
                     clearInterval(timerInterval);
-                    // TimeOut Penalty = Tarikan Otomatis
                     playSFX('withdrawal');
                     handleAnswer({ 
                         text: "[WAKTU HABIS] Tidak memberikan respons.", 
@@ -649,12 +639,10 @@
         function handleAnswer(selectedOpt, questionData) {
             clearInterval(timerInterval);
 
-            // 1. Update Scores & Play SFX
             score += selectedOpt.score;
             document.getElementById("ui-score").innerText = score;
             playSFX(selectedOpt.type);
 
-            // 2. Update Emotional Bank Account
             let targetUpdate = questionData.target;
             if (targetUpdate === "all") {
                 trust.Juni = clamp(trust.Juni + selectedOpt.val);
@@ -665,7 +653,6 @@
             }
             updateTrustUI();
 
-            // 3. Record Debrief
             historyDebrief.push({
                 incident: questionData.title,
                 choice: selectedOpt.text,
@@ -673,8 +660,6 @@
                 feedback: selectedOpt.explain
             });
 
-            // 4. Next Question Delay
-            // Nonaktifkan tombol sementara
             const btns = document.querySelectorAll(".btn-option");
             btns.forEach(b => b.disabled = true);
 
@@ -718,58 +703,35 @@
             document.getElementById("screen-debrief").classList.remove("hidden");
 
             const avgTrust = Math.round((trust.Juni + trust.Mian + trust.asih) / 3);
-            let statusProyek = (avgTrust >= 60) ? "WIN" : "LOSE";
             
             // Update UI Score
             document.getElementById("final-score").innerText = score;
             document.getElementById("final-trust").innerText = avgTrust + "%";
 
-            // --- BAGIAN PENGIRIMAN DATA KE DATABASE ---
-            const GAS_URL = "URL_WEB_APP_GAS_ANDA_DISINI"; // <--- GANTI INI!
-            
-            const payloadData = {
-                nik: document.getElementById("input-nik").value,
-                nama: document.getElementById("input-name").value,
-                jabatan: "Project Manager",
-                total_poin: score,
-                rata_rata_trust: avgTrust,
-                status_proyek: statusProyek,
-                trust_budi: trust.Juni,
-                trust_siska: trust.Mian,
-                trust_dirman: trust.asih,
-                q1_sd_q10_tipe: historyDebrief.map(d => d.type).join(", "),
-                q1_sd_q10_jawaban: historyDebrief.map(d => d.choice).join(" || ")
-            };
-
-            fetch(GAS_URL, {
-                method: "POST",
-                mode: "no-cors", // Penting agar tidak terblokir CORS
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payloadData)
-            }).then(() => console.log("Data terkirim!"));
-            // ------------------------------------------
-
-            // ... (Kode UI Result Anda tetap seperti yang sebelumnya di bawah ini)
             const uiStatusBox = document.getElementById("result-status-box");
             const uiSubheading = document.getElementById("result-subheading");
             const uiMessage = document.getElementById("result-message");
 
-            if (avgTrust >= 60) {
+            // Evaluate Win/Lose
+            if (avgTrust >= 60) { // WIN
                 playSFX('badge');
-                uiStatusBox.style.backgroundColor = "rgba(16, 185, 129, 0.1)";
+                uiStatusBox.style.backgroundColor = "rgba(16, 185, 129, 0.1)"; // deposit color
                 uiStatusBox.style.borderLeft = "4px solid var(--deposit)";
                 uiSubheading.innerText = "🌟 PROYEK SUKSES! 🌟";
                 uiSubheading.style.color = "var(--deposit)";
-                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi.`;
-            } else {
+                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi. Juni bekerja keras memperbaikinya tanpa mengeluh, Mian menenangkan klien, dan Bu Asih memuji kepemimpinan Anda. Komunikasi terbuka menang!`;
+                
+                if(score > 120) setTimeout(() => showBadge("Master of Trust", "Poin Sempurna! Relasi kerja sangat solid."), 1000);
+            } else { // LOSE
                 playSFX('withdrawal');
-                uiStatusBox.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
+                uiStatusBox.style.backgroundColor = "rgba(239, 68, 68, 0.1)"; // withdrawal color
                 uiStatusBox.style.borderLeft = "4px solid var(--withdrawal)";
                 uiSubheading.innerText = "💥 PROYEK GAGAL 💥";
                 uiSubheading.style.color = "var(--withdrawal)";
-                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah.`;
+                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah. Juni menolak disalahkan dan mengancam <i>resign</i>, Mian menyalahkan IT ke klien, dan Anda mendapat Surat Peringatan. Inilah efek dari Tarikan Emosi!`;
             }
 
+            // Generate Debrief Feedback Loop
             const debriefContainer = document.getElementById("debrief-list");
             historyDebrief.forEach((item, index) => {
                 let card = document.createElement("div");
@@ -781,7 +743,84 @@
                 `;
                 debriefContainer.appendChild(card);
             });
-        }    
-</script>
+
+            // TRIGGER DATABASE: Kirim payload ke GAS
+            sendGameDataToGoogleSheets();
+        }
+
+        // =====================================================================
+        // INTEGRASI DATABASE GOOGLE APPS SCRIPT
+        // =====================================================================
+        async function sendGameDataToGoogleSheets() {
+            // URL Web App GAS Anda
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbyeTetRSqMdb6jV436EBkmKyf_GOd3NVz6HTMG_LlqidcP2hcpYAnYuyJMrHrWV4YkX/exec";
+
+            // Ambil referensi Tombol untuk UI Loading
+            const debriefContainer = document.getElementById("screen-debrief");
+            const actionBtn = debriefContainer.querySelector("button"); 
+            let originalBtnText = "Tunggu...";
+            
+            if (actionBtn) {
+                originalBtnText = actionBtn.innerText;
+                actionBtn.innerText = "⏳ Menyimpan Data Performa...";
+                actionBtn.disabled = true;
+                actionBtn.style.opacity = "0.7";
+            }
+
+            // Kalkulasi metrik final
+            const avgTrust = Math.round((trust.Juni + trust.Mian + trust.asih) / 3);
+            const statusProyek = (avgTrust >= 60) ? "WIN" : "LOSE";
+
+            // Menyusun Payload JSON yang map dengan Database Header Google Sheets
+            const payload = {
+                nik: document.getElementById("input-nik").value || "-",
+                nama: document.getElementById("input-name").value || "Unknown Player",
+                jabatan: "Project Manager", 
+                total_poin: score, 
+                rata_rata_trust: avgTrust,
+                status_proyek: statusProyek,
+                trust_budi: trust.Juni, // Map ke header database lama
+                trust_siska: trust.Mian, // Map ke header database lama
+                trust_dirman: trust.asih, // Map ke header database lama
+                q1_sd_q10_tipe: historyDebrief.map(item => item.type).join(", "),
+                q1_sd_q10_jawaban: historyDebrief.map((item, i) => `[Q${i+1}] ${item.choice}`).join(" || ")
+            };
+
+            // Konfigurasi Fetch menggunakan Content-Type text/plain untuk bypass preflight CORS issue
+            const requestOptions = {
+                method: "POST",
+                mode: "cors", 
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8", 
+                },
+                body: JSON.stringify(payload)
+            };
+
+            // Eksekusi Pengiriman
+            try {
+                const response = await fetch(GAS_URL, requestOptions);
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    if (actionBtn) {
+                        actionBtn.innerText = "✅ Data Tersimpan! " + originalBtnText;
+                        actionBtn.style.backgroundColor = "var(--deposit)"; 
+                        actionBtn.disabled = false;
+                        actionBtn.style.opacity = "1";
+                    }
+                } else {
+                    throw new Error(result.message || "Unknown Error");
+                }
+            } catch (error) {
+                console.error("Gagal mengirim data ke Sheets:", error);
+                if (actionBtn) {
+                    actionBtn.innerText = "⚠️ Gagal Simpan Database. " + originalBtnText;
+                    actionBtn.style.backgroundColor = "var(--withdrawal)"; 
+                    actionBtn.disabled = false;
+                    actionBtn.style.opacity = "1";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
