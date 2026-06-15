@@ -240,8 +240,8 @@
                     <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-Mian"></div></div>
                 </div>
                 <div class="trust-card">
-                    <span>👔 P. Dirman (Atasan)</span>
-                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-dirman"></div></div>
+                    <span>👔 Bu Asih (Atasan)</span>
+                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-asih"></div></div>
                 </div>
             </div>
 
@@ -321,7 +321,7 @@
                 ]
             },
             {
-                day: "Senin", target: "dirman", 
+                day: "Senin", target: "asih", 
                 title: "Pertanyaan Progres Dadakan",
                 desc: "Bu Asih memanggil Anda dan meminta update progres di luar jadwal meeting, beliau terlihat cemas.",
                 hint: "Atasan menghargai proaktivitas dan transparansi.",
@@ -365,7 +365,7 @@
                 ]
             },
             {
-                day: "Rabu", target: "dirman", 
+                day: "Rabu", target: "asih", 
                 title: "Gosip Kantor",
                 desc: "Bu Asih memanggil Anda dan memancing Anda untuk menjelek-jelekkan kinerja Mian dari Marketing.",
                 hint: "Integritas berarti setia kepada mereka yang tidak hadir.",
@@ -387,7 +387,7 @@
                 ]
             },
             {
-                day: "Kamis", target: "dirman", 
+                day: "Kamis", target: "asih", 
                 title: "Janji Mustahil",
                 desc: "Bu Asih secara sepihak menjanjikan ke direksi bahwa sistem akan beroperasi 10x lebih cepat besok.",
                 hint: "Klarifikasi ekspektasi harus dilakukan dengan berani dan berdasar.",
@@ -415,7 +415,7 @@
                 hint: "Kepemimpinan diuji saat krisis. Trust yang tinggi akan menyelamatkan tim.",
                 options: [
                     { text: "Panik, salahkan Juni di depan atasan, dan lepas tangan.", type: "withdrawal", val: -40, score: -20, explain: "TARIKAN FATAL: Pemimpin yang cuci tangan menghancurkan semua Saldo Emosi." },
-                    { text: "Tetap tenang, delegasikan tugas perbaikan ke Juni, minta Mian handle komunikasi klien, dan lapor Dirman transparan.", type: "deposit", val: 30, score: 20, explain: "SETORAN MASTER: Menggunakan Saldo Kepercayaan yang telah dibangun. Tim bergerak solid tanpa rasa takut." },
+                    { text: "Tetap tenang, delegasikan tugas perbaikan ke Juni, minta Mian handle komunikasi klien, dan lapor asih transparan.", type: "deposit", val: 30, score: 20, explain: "SETORAN MASTER: Menggunakan Saldo Kepercayaan yang telah dibangun. Tim bergerak solid tanpa rasa takut." },
                     { text: "Coba perbaiki semua sendiri tanpa komunikasi ke siapapun.", type: "neutral", val: -20, score: -10, explain: "TARIKAN: Micromanagement di saat krisis menunjukkan ketiadaan rasa saling percaya (Trust)." }
                 ]
             }
@@ -424,7 +424,7 @@
         /* --- STATE VARIABLES --- */
         let currentQ = 0;
         let score = 0;
-        let trust = { Juni: 50, Mian: 50, dirman: 50 };
+        let trust = { Juni: 50, Mian: 50, asih: 50 };
         let historyDebrief = [];
         let timer = 20;
         let timerInterval;
@@ -659,7 +659,7 @@
             if (targetUpdate === "all") {
                 trust.Juni = clamp(trust.Juni + selectedOpt.val);
                 trust.Mian = clamp(trust.Mian + selectedOpt.val);
-                trust.dirman = clamp(trust.dirman + selectedOpt.val);
+                trust.asih = clamp(trust.asih + selectedOpt.val);
             } else {
                 trust[targetUpdate] = clamp(trust[targetUpdate] + selectedOpt.val);
             }
@@ -694,7 +694,7 @@
             const bars = [
                 { id: "bar-Juni", val: trust.Juni },
                 { id: "bar-Mian", val: trust.Mian },
-                { id: "bar-dirman", val: trust.dirman }
+                { id: "bar-asih", val: trust.asih }
             ];
 
             bars.forEach(b => {
@@ -717,7 +717,7 @@
             document.getElementById("screen-game").classList.add("hidden");
             document.getElementById("screen-debrief").classList.remove("hidden");
 
-            const avgTrust = Math.round((trust.Juni + trust.Mian + trust.dirman) / 3);
+            const avgTrust = Math.round((trust.Juni + trust.Mian + trust.asih) / 3);
             
             // Update UI Score
             document.getElementById("final-score").innerText = score;
