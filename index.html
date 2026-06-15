@@ -718,35 +718,58 @@
             document.getElementById("screen-debrief").classList.remove("hidden");
 
             const avgTrust = Math.round((trust.Juni + trust.Mian + trust.asih) / 3);
+            let statusProyek = (avgTrust >= 60) ? "WIN" : "LOSE";
             
             // Update UI Score
             document.getElementById("final-score").innerText = score;
             document.getElementById("final-trust").innerText = avgTrust + "%";
 
+            // --- BAGIAN PENGIRIMAN DATA KE DATABASE ---
+            const GAS_URL = "URL_WEB_APP_GAS_ANDA_DISINI"; // <--- GANTI INI!
+            
+            const payloadData = {
+                nik: document.getElementById("input-nik").value,
+                nama: document.getElementById("input-name").value,
+                jabatan: "Project Manager",
+                total_poin: score,
+                rata_rata_trust: avgTrust,
+                status_proyek: statusProyek,
+                trust_budi: trust.Juni,
+                trust_siska: trust.Mian,
+                trust_dirman: trust.asih,
+                q1_sd_q10_tipe: historyDebrief.map(d => d.type).join(", "),
+                q1_sd_q10_jawaban: historyDebrief.map(d => d.choice).join(" || ")
+            };
+
+            fetch(GAS_URL, {
+                method: "POST",
+                mode: "no-cors", // Penting agar tidak terblokir CORS
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payloadData)
+            }).then(() => console.log("Data terkirim!"));
+            // ------------------------------------------
+
+            // ... (Kode UI Result Anda tetap seperti yang sebelumnya di bawah ini)
             const uiStatusBox = document.getElementById("result-status-box");
             const uiSubheading = document.getElementById("result-subheading");
             const uiMessage = document.getElementById("result-message");
 
-            // Evaluate Win/Lose
-            if (avgTrust >= 60) { // WIN
+            if (avgTrust >= 60) {
                 playSFX('badge');
-                uiStatusBox.style.backgroundColor = "rgba(16, 185, 129, 0.1)"; // deposit color
+                uiStatusBox.style.backgroundColor = "rgba(16, 185, 129, 0.1)";
                 uiStatusBox.style.borderLeft = "4px solid var(--deposit)";
                 uiSubheading.innerText = "🌟 PROYEK SUKSES! 🌟";
                 uiSubheading.style.color = "var(--deposit)";
-                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi. Juni bekerja keras memperbaikinya tanpa mengeluh, Mian menenangkan klien, dan Bu Asih memuji kepemimpinan Anda. Komunikasi terbuka menang!`;
-                
-                if(score > 120) setTimeout(() => showBadge("Master of Trust", "Poin Sempurna! Relasi kerja sangat solid."), 1000);
-            } else { // LOSE
+                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi.`;
+            } else {
                 playSFX('withdrawal');
-                uiStatusBox.style.backgroundColor = "rgba(239, 68, 68, 0.1)"; // withdrawal color
+                uiStatusBox.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
                 uiStatusBox.style.borderLeft = "4px solid var(--withdrawal)";
                 uiSubheading.innerText = "💥 PROYEK GAGAL 💥";
                 uiSubheading.style.color = "var(--withdrawal)";
-                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah. Juni menolak disalahkan dan mengancam <i>resign</i>, Mian menyalahkan IT ke klien, dan Anda mendapat Surat Peringatan. Inilah efek dari Tarikan Emosi!`;
+                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah.`;
             }
 
-            // Generate Debrief Feedback Loop
             const debriefContainer = document.getElementById("debrief-list");
             historyDebrief.forEach((item, index) => {
                 let card = document.createElement("div");
@@ -758,7 +781,7 @@
                 `;
                 debriefContainer.appendChild(card);
             });
-        }
-    </script>
+        }    
+</script>
 </body>
 </html>
