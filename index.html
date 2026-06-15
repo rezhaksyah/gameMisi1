@@ -170,7 +170,7 @@
             
             <div class="info-box">
                 <strong>💡 WHY PLAY THIS?</strong><br>
-                Di dunia nyata, keahlian teknis saja tidak cukup. Hubungan kerja menentukan kecepatan penyelesaian masalah. Game ini melatih insting Anda dalam membedakan "Setoran" (Deposit) dan "Tarikan" (Withdrawal) pada <i>Emotional Bank Account</i> rekan kerja Anda.
+                Di dunia nyata, keahlian teknis saja tidak cukup. Hubungan kerja menentukan kecepatan penyelesaian masalah. Game ini melatih insting Anda dalam membedakan "Setoran" dan "Tarikan" pada <i>Emotional Bank Account</i> rekan kerja Anda.
             </div>
 
             <div class="form-group">
@@ -195,9 +195,9 @@
             <p>Anda adalah <b>Alex</b>, Project Manager baru. Proyek "Alpha" sedang kritis dan Anda harus mengelolanya bersama 3 stakeholder utama dalam waktu 5 hari (Senin-Jumat):</p>
             
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <p>👨‍💻 <b>Budi (Junior Dev):</b> Butuh bimbingan, sering <i>insecure</i>.</p>
-                <p>👩‍💼 <b>Siska (Marketing):</b> Ambisius, sibuk, permintaannya sering mendadak.</p>
-                <p>👔 <b>Pak Dirman (Atasan):</b> Fokus pada hasil & sangat menghargai transparansi.</p>
+                <p>👨‍💻 <b>Juni (Junior Dev):</b> Butuh bimbingan, sering <i>insecure</i>.</p>
+                <p>👩‍💼 <b>Mian (Marketing):</b> Ambisius, sibuk, permintaannya sering mendadak.</p>
+                <p>👔 <b>Bu Asih (Atasan):</b> Fokus pada hasil & sangat menghargai transparansi.</p>
             </div>
 
             <div class="info-box" style="border-color: var(--deposit); background: rgba(16, 185, 129, 0.1);">
@@ -232,12 +232,12 @@
             <!-- Emotional Bank Account Bars -->
             <div class="trust-grid">
                 <div class="trust-card">
-                    <span>👨‍💻 Budi (Tim)</span>
-                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-budi"></div></div>
+                    <span>👨‍💻 Juni (Tim)</span>
+                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-Juni"></div></div>
                 </div>
                 <div class="trust-card">
-                    <span>👩‍💼 Siska (Lintas Divisi)</span>
-                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-siska"></div></div>
+                    <span>👩‍💼 Mian (Lintas Divisi)</span>
+                    <div class="trust-bar-bg"><div class="trust-bar-fill" id="bar-Mian"></div></div>
                 </div>
                 <div class="trust-card">
                     <span>👔 P. Dirman (Atasan)</span>
@@ -310,20 +310,20 @@
         /* --- GAME DATA --- */
         const scenarios = [
             {
-                day: "Senin", target: "budi", 
+                day: "Senin", target: "Juni", 
                 title: "Junior Terjebak Masalah",
-                desc: "Budi menghabiskan waktu berjam-jam mencoba memperbaiki bug kecil dan terlihat sangat frustrasi, progress tugasnya terhenti.",
-                hint: "Budi butuh bimbingan tanpa merasa dihakimi.",
+                desc: "Juni menghabiskan waktu berjam-jam mencoba memperbaiki bug kecil dan terlihat sangat frustrasi, progress tugasnya terhenti.",
+                hint: "Juni butuh bimbingan tanpa merasa dihakimi.",
                 options: [
-                    { text: "Tawarkan bantuan 15 menit untuk melihat kodenya bersama-sama.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Anda meluangkan waktu untuk mendengarkan dan membimbing, memberikan rasa aman pada Budi." },
-                    { text: "Tegur Budi agar belajar lebih cepat karena deadline sudah dekat.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Menunjukkan reaksi tidak sabar yang semakin merusak kepercayaan diri junior." },
+                    { text: "Tawarkan bantuan 15 menit untuk melihat kodenya bersama-sama.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Anda meluangkan waktu untuk mendengarkan dan membimbing, memberikan rasa aman pada Juni." },
+                    { text: "Tegur Juni agar belajar lebih cepat karena deadline sudah dekat.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Menunjukkan reaksi tidak sabar yang semakin merusak kepercayaan diri junior." },
                     { text: "Kirimkan link dokumentasi tanpa penjelasan lebih lanjut.", type: "neutral", val: 0, score: 0, explain: "NETRAL (Missed Opportunity): Menyelesaikan masalah secara teknis tapi kehilangan momen membangun hubungan manusiawi." }
                 ]
             },
             {
                 day: "Senin", target: "dirman", 
                 title: "Pertanyaan Progres Dadakan",
-                desc: "Pak Dirman memanggil Anda dan meminta update progres di luar jadwal meeting, beliau terlihat cemas.",
+                desc: "Bu Asih memanggil Anda dan meminta update progres di luar jadwal meeting, beliau terlihat cemas.",
                 hint: "Atasan menghargai proaktivitas dan transparansi.",
                 options: [
                     { text: "Jelaskan dengan jujur progres saat ini beserta potensi masalah teknis yang ada.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Mengklarifikasi ekspektasi dan menunjukkan integritas (kejujuran) sejak awal." },
@@ -332,10 +332,10 @@
                 ]
             },
             {
-                day: "Selasa", target: "siska", 
+                day: "Selasa", target: "Mian", 
                 title: "Revisi Tiba-tiba",
-                desc: "Siska dari Marketing meminta fitur tambahan secara mendadak yang akan menggeser jadwal rilis hari ini.",
-                hint: "Siska berorientasi target, hindari konflik terbuka tapi tetap jaga batasan.",
+                desc: "Mian dari Marketing meminta fitur tambahan secara mendadak yang akan menggeser jadwal rilis hari ini.",
+                hint: "Mian berorientasi target, hindari konflik terbuka tapi tetap jaga batasan.",
                 options: [
                     { text: "Tolak mentah-mentah dan marahi dia karena tidak paham proses development.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Reaktif dan merusak relasi kerja lintas divisi." },
                     { text: "Ajak diskusi singkat untuk memahami tujuan fitur tersebut dan mencari jalan tengah (win-win).", type: "deposit", val: 20, score: 10, explain: "SETORAN: Berusaha memahami terlebih dahulu (Seek First to Understand), menunjukkan respek." },
@@ -343,23 +343,23 @@
                 ]
             },
             {
-                day: "Selasa", target: "budi", 
+                day: "Selasa", target: "Juni", 
                 title: "Kesalahan Fatal di Server",
-                desc: "Budi tidak sengaja menghapus database testing, membuat seluruh tim tidak bisa bekerja selama 1 jam.",
+                desc: "Juni tidak sengaja menghapus database testing, membuat seluruh tim tidak bisa bekerja selama 1 jam.",
                 hint: "Ujian sesungguhnya dari Emotional Bank Account adalah saat terjadi kesalahan.",
                 options: [
-                    { text: "Perbaiki diam-diam tanpa memberitahunya agar dia tidak merasa bersalah.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Menghindari masalah. Budi tidak belajar dari kesalahannya." },
+                    { text: "Perbaiki diam-diam tanpa memberitahunya agar dia tidak merasa bersalah.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Menghindari masalah. Juni tidak belajar dari kesalahannya." },
                     { text: "Panggil secara privat, bahas kronologinya tanpa menyalahkan, dan buat pencegahan bersama.", type: "deposit", val: 20, score: 10, explain: "SETORAN BESAR: Memberikan feedback konstruktif dan memaafkan kesalahan menciptakan loyalitas yang kuat." },
                     { text: "Tegur keras di grup chat utama agar yang lain tidak mengulangi.", type: "withdrawal", val: -25, score: -15, explain: "TARIKAN FATAL: Mempermalukan orang di depan umum adalah cara tercepat menghancurkan Trust." }
                 ]
             },
             {
-                day: "Rabu", target: "siska", 
+                day: "Rabu", target: "Mian", 
                 title: "Keluhan ke Atasan",
-                desc: "Siska mengirim email komplain panjang kepada Pak Dirman dan CC ke Anda, mengeluhkan tim dev yang lambat.",
+                desc: "Mian mengirim email komplain panjang kepada Bu Asih dan CC ke Anda, mengeluhkan tim dev yang lambat.",
                 hint: "Hadapi masalah dengan objektif, jangan balas menyerang.",
                 options: [
-                    { text: "Balas email dengan data objektif mengenai backlog dan ajak Siska meeting penyelarasan.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Mengendalikan emosi dan merespons (Response-ability) dengan solusi profesional." },
+                    { text: "Balas email dengan data objektif mengenai backlog dan ajak Mian meeting penyelarasan.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Mengendalikan emosi dan merespons (Response-ability) dengan solusi profesional." },
                     { text: "Balas email dengan menyerang balik bahwa spesifikasi dari tim marketing selalu tidak jelas.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Lingkaran reaktif yang hanya akan memperburuk konflik antar tim." },
                     { text: "Hanya membalas 'Noted' dan membiarkan atasan yang menilai.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Tidak memperburuk, tapi tidak memperbaiki relasi yang sedang rusak." }
                 ]
@@ -367,18 +367,18 @@
             {
                 day: "Rabu", target: "dirman", 
                 title: "Gosip Kantor",
-                desc: "Pak Dirman memanggil Anda dan memancing Anda untuk menjelek-jelekkan kinerja Siska dari Marketing.",
+                desc: "Bu Asih memanggil Anda dan memancing Anda untuk menjelek-jelekkan kinerja Mian dari Marketing.",
                 hint: "Integritas berarti setia kepada mereka yang tidak hadir.",
                 options: [
-                    { text: "Ikut mengeluhkan Siska agar atasan merasa Anda berada di pihaknya.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Jika Anda menjelekkan orang yang tidak ada, Pak Dirman diam-diam tidak akan mempercayai Anda juga." },
+                    { text: "Ikut mengeluhkan Mian agar atasan merasa Anda berada di pihaknya.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Jika Anda menjelekkan orang yang tidak ada, Bu Asih diam-diam tidak akan mempercayai Anda juga." },
                     { text: "Bersikap netral dengan mengatakan Anda hanya fokus pada tim development.", type: "neutral", val: 0, score: 0, explain: "NETRAL: Cukup aman, tapi kurang menunjukkan kepemimpinan." },
-                    { text: "Bela Siska dengan sopan, sampaikan bahwa Siska hanya berusaha memenuhi target Marketing.", type: "deposit", val: 25, score: 15, explain: "SETORAN BESAR: Menunjukkan integritas tinggi. Atasan akan tahu bahwa Anda dapat dipercaya." }
+                    { text: "Bela Mian dengan sopan, sampaikan bahwa Mian hanya berusaha memenuhi target Marketing.", type: "deposit", val: 25, score: 15, explain: "SETORAN BESAR: Menunjukkan integritas tinggi. Atasan akan tahu bahwa Anda dapat dipercaya." }
                 ]
             },
             {
-                day: "Kamis", target: "budi", 
+                day: "Kamis", target: "Juni", 
                 title: "Urusan Keluarga Darurat",
-                desc: "Budi memohon izin pulang cepat di tengah situasi genting karena anaknya sakit parah.",
+                desc: "Juni memohon izin pulang cepat di tengah situasi genting karena anaknya sakit parah.",
                 hint: "Hal kecil (kemanusiaan) adalah hal besar dalam hubungan.",
                 options: [
                     { text: "Tolak izinnya karena besok adalah hari rilis (launching) proyek.", type: "withdrawal", val: -30, score: -15, explain: "TARIKAN FATAL: Mengorbankan kemanusiaan demi tugas menghancurkan Trust sepenuhnya." },
@@ -389,7 +389,7 @@
             {
                 day: "Kamis", target: "dirman", 
                 title: "Janji Mustahil",
-                desc: "Pak Dirman secara sepihak menjanjikan ke direksi bahwa sistem akan beroperasi 10x lebih cepat besok.",
+                desc: "Bu Asih secara sepihak menjanjikan ke direksi bahwa sistem akan beroperasi 10x lebih cepat besok.",
                 hint: "Klarifikasi ekspektasi harus dilakukan dengan berani dan berdasar.",
                 options: [
                     { text: "Diam saja dan berharap mukjizat terjadi besok.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Tidak mengklarifikasi harapan di awal adalah jaminan kekecewaan di akhir." },
@@ -398,12 +398,12 @@
                 ]
             },
             {
-                day: "Jumat", target: "siska", 
-                title: "Permintaan Maaf Siska",
-                desc: "Siska menyadari kesalahannya dalam membuat spesifikasi dan meminta maaf secara pribadi kepada Anda.",
+                day: "Jumat", target: "Mian", 
+                title: "Permintaan Maaf Mian",
+                desc: "Mian menyadari kesalahannya dalam membuat spesifikasi dan meminta maaf secara pribadi kepada Anda.",
                 hint: "Cara Anda menerima permintaan maaf menentukan relasi ke depan.",
                 options: [
-                    { text: "Sindir Siska agar dia benar-benar kapok.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Menyimpan dendam dan arogansi merusak setoran sebelumnya." },
+                    { text: "Sindir Mian agar dia benar-benar kapok.", type: "withdrawal", val: -20, score: -10, explain: "TARIKAN: Menyimpan dendam dan arogansi merusak setoran sebelumnya." },
                     { text: "Abaikan dan suruh dia langsung perbaiki dokumennya.", type: "neutral", val: -5, score: 0, explain: "NETRAL/TARIKAN: Kehilangan peluang untuk menguatkan kolaborasi." },
                     { text: "Terima permintaan maaf dengan tulus dan ajak buka lembaran baru.", type: "deposit", val: 20, score: 10, explain: "SETORAN: Meminta dan menerima maaf dengan tulus (Apologizing Sincerely) membersihkan 'Rekening'." }
                 ]
@@ -414,8 +414,8 @@
                 desc: "KRISIS TERJADI! Sistem crash 1 jam sebelum launching. Suasana sangat tegang, semua mata tertuju pada Anda.",
                 hint: "Kepemimpinan diuji saat krisis. Trust yang tinggi akan menyelamatkan tim.",
                 options: [
-                    { text: "Panik, salahkan Budi di depan atasan, dan lepas tangan.", type: "withdrawal", val: -40, score: -20, explain: "TARIKAN FATAL: Pemimpin yang cuci tangan menghancurkan semua Saldo Emosi." },
-                    { text: "Tetap tenang, delegasikan tugas perbaikan ke Budi, minta Siska handle komunikasi klien, dan lapor Dirman transparan.", type: "deposit", val: 30, score: 20, explain: "SETORAN MASTER: Menggunakan Saldo Kepercayaan yang telah dibangun. Tim bergerak solid tanpa rasa takut." },
+                    { text: "Panik, salahkan Juni di depan atasan, dan lepas tangan.", type: "withdrawal", val: -40, score: -20, explain: "TARIKAN FATAL: Pemimpin yang cuci tangan menghancurkan semua Saldo Emosi." },
+                    { text: "Tetap tenang, delegasikan tugas perbaikan ke Juni, minta Mian handle komunikasi klien, dan lapor Dirman transparan.", type: "deposit", val: 30, score: 20, explain: "SETORAN MASTER: Menggunakan Saldo Kepercayaan yang telah dibangun. Tim bergerak solid tanpa rasa takut." },
                     { text: "Coba perbaiki semua sendiri tanpa komunikasi ke siapapun.", type: "neutral", val: -20, score: -10, explain: "TARIKAN: Micromanagement di saat krisis menunjukkan ketiadaan rasa saling percaya (Trust)." }
                 ]
             }
@@ -424,7 +424,7 @@
         /* --- STATE VARIABLES --- */
         let currentQ = 0;
         let score = 0;
-        let trust = { budi: 50, siska: 50, dirman: 50 };
+        let trust = { Juni: 50, Mian: 50, dirman: 50 };
         let historyDebrief = [];
         let timer = 20;
         let timerInterval;
@@ -657,8 +657,8 @@
             // 2. Update Emotional Bank Account
             let targetUpdate = questionData.target;
             if (targetUpdate === "all") {
-                trust.budi = clamp(trust.budi + selectedOpt.val);
-                trust.siska = clamp(trust.siska + selectedOpt.val);
+                trust.Juni = clamp(trust.Juni + selectedOpt.val);
+                trust.Mian = clamp(trust.Mian + selectedOpt.val);
                 trust.dirman = clamp(trust.dirman + selectedOpt.val);
             } else {
                 trust[targetUpdate] = clamp(trust[targetUpdate] + selectedOpt.val);
@@ -692,8 +692,8 @@
             const getColor = (v) => v >= 70 ? 'var(--deposit)' : (v <= 30 ? 'var(--withdrawal)' : 'var(--accent)');
             
             const bars = [
-                { id: "bar-budi", val: trust.budi },
-                { id: "bar-siska", val: trust.siska },
+                { id: "bar-Juni", val: trust.Juni },
+                { id: "bar-Mian", val: trust.Mian },
                 { id: "bar-dirman", val: trust.dirman }
             ];
 
@@ -717,7 +717,7 @@
             document.getElementById("screen-game").classList.add("hidden");
             document.getElementById("screen-debrief").classList.remove("hidden");
 
-            const avgTrust = Math.round((trust.budi + trust.siska + trust.dirman) / 3);
+            const avgTrust = Math.round((trust.Juni + trust.Mian + trust.dirman) / 3);
             
             // Update UI Score
             document.getElementById("final-score").innerText = score;
@@ -734,7 +734,7 @@
                 uiStatusBox.style.borderLeft = "4px solid var(--deposit)";
                 uiSubheading.innerText = "🌟 PROYEK SUKSES! 🌟";
                 uiSubheading.style.color = "var(--deposit)";
-                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi. Budi bekerja keras memperbaikinya tanpa mengeluh, Siska menenangkan klien, dan Pak Dirman memuji kepemimpinan Anda. Komunikasi terbuka menang!`;
+                uiMessage.innerHTML = `Selamat! Karena saldo <b>Trust Balance</b> Anda tinggi, krisis hari Jumat dapat diatasi. Juni bekerja keras memperbaikinya tanpa mengeluh, Mian menenangkan klien, dan Bu Asih memuji kepemimpinan Anda. Komunikasi terbuka menang!`;
                 
                 if(score > 120) setTimeout(() => showBadge("Master of Trust", "Poin Sempurna! Relasi kerja sangat solid."), 1000);
             } else { // LOSE
@@ -743,7 +743,7 @@
                 uiStatusBox.style.borderLeft = "4px solid var(--withdrawal)";
                 uiSubheading.innerText = "💥 PROYEK GAGAL 💥";
                 uiSubheading.style.color = "var(--withdrawal)";
-                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah. Budi menolak disalahkan dan mengancam <i>resign</i>, Siska menyalahkan IT ke klien, dan Anda mendapat Surat Peringatan. Inilah efek dari Tarikan Emosi!`;
+                uiMessage.innerHTML = `Krisis di hari Jumat meledak menjadi bencana karena saldo <b>Trust Balance</b> Anda rendah. Juni menolak disalahkan dan mengancam <i>resign</i>, Mian menyalahkan IT ke klien, dan Anda mendapat Surat Peringatan. Inilah efek dari Tarikan Emosi!`;
             }
 
             // Generate Debrief Feedback Loop
